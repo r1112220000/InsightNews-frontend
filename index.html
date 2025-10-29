@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InsightNews 管理系统 - 登录</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <h1 class="brand">InsightNews 管理系统</h1>
+      <p class="subtitle">管理员登录</p>
+
+      <form id="loginForm" class="form">
+        <div class="form-item">
+          <label for="phone">手机号</label>
+          <input id="phone" name="phone" type="tel" placeholder="请输入手机号" required />
+        </div>
+        <div class="form-item">
+          <label for="code">验证码</label>
+          <input id="code" name="code" type="text" placeholder="请输入验证码" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="loginBtn">登录</button>
+      </form>
+
+      <p class="tips">使用现有接口 /user/login。成功后会保存 token 并跳转到用户管理。开发临时方案：账号输入 <strong>admin</strong>，验证码 <strong>123456</strong> 可直接进入（仅本地演示）。</p>
+      <div id="message" class="message" role="alert" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script src="assets/icons.svg" type="image/svg+xml"></script>
+  <script src="js/config.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const form = document.getElementById('loginForm');
+    const messageBox = document.getElementById('message');
+    const loginBtn = document.getElementById('loginBtn');
+
+    function showMessage(text, type = 'info') {
+      messageBox.textContent = text;
+      messageBox.className = `message ${type}`;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value.trim();
+      const code = document.getElementById('code').value.trim();
+      if (!phone || !code) {
+        showMessage('请填写手机号和验证码', 'error');
+        return;
+      }
+      loginBtn.disabled = true;
+      showMessage('登录中...', 'info');
+      try {
+        // 开发临时方案：本地直通管理员
+        if (phone === 'admin' && code === '123456') {
+          localStorage.setItem('token', 'DEV_ADMIN');
+          showMessage('开发模式登录成功，正在跳转...', 'success');
+          window.location.href = 'users.html';
+          return;
+        }
+
+        const data = await api.post('/user/login', { phone, code });
+        if (data && data.token) {
+          localStorage.setItem('token', data.token);
+          showMessage('登录成功，正在跳转...', 'success');
+          window.location.href = 'users.html';
+        } else {
+          showMessage('登录失败：未返回 token', 'error');
+        }
+      } catch (err) {
+        showMessage(`登录失败：${err.message || '请求错误'}`, 'error');
+      } finally {
+        loginBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
+
+

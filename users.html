@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>账号管理 - InsightNews 管理系统</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">InsightNews 管理系统</div>
+    <nav class="nav">
+      <a href="users.html" class="nav-link active"><svg class="icon"><use href="assets/icons.svg#users"></use></svg> 账号管理</a>
+      <button id="themeToggle" class="btn btn-ghost" title="切换主题"><svg class="icon"><use href="assets/icons.svg#moon"></use></svg></button>
+      <button id="logoutBtn" class="btn btn-ghost">退出登录</button>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h3 class="title">管理导航</h3>
+      <div class="snav">
+        <a href="users.html"><svg class="icon"><use href="assets/icons.svg#users"></use></svg> 账号管理</a>
+      </div>
+    </aside>
+  <main class="container">
+    <section class="toolbar">
+      <div class="search-group">
+        <div class="search">
+          <span class="search-icon"><svg class="icon"><use href="assets/icons.svg#search"></use></svg></span>
+          <input id="keyword" type="text" placeholder="搜索姓名、邮箱、手机号..." />
+        </div>
+        <button id="searchBtn" class="btn btn-primary">搜索</button>
+        <button id="addUserBtn" class="btn btn-primary">新建用户</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="table-responsive">
+        <table class="table" id="usersTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>姓名</th>
+              <th>邮箱</th>
+              <th>性别</th>
+              <th>地区</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="usersTbody">
+            <tr><td colspan="7" class="text-center">加载中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="pagination"></div>
+    </section>
+  </main>
+  </div>
+
+  <script src="assets/icons.svg" type="image/svg+xml"></script>
+  <script src="js/config.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/users.js"></script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      Theme.toggle();
+      const useId = document.documentElement.getAttribute('data-theme') === 'dark' ? 'sun' : 'moon';
+      document.querySelector('#themeToggle use').setAttribute('href', `assets/icons.svg#${useId}`);
+    });
+  </script>
+</body>
+</html>
